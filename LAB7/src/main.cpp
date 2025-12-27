@@ -92,7 +92,6 @@ static void process_wavelet_basis(const std::string& output_directory,
     signal_processing::wavelet_processor processor(n, type);
     std::string basis_name = get_wavelet_name(type);
 
-    // Создаем директорию, если она не существует
     std::string cmd = "mkdir -p " + output_directory;
     system(cmd.c_str());
 
@@ -138,15 +137,9 @@ static void process_wavelet_basis(const std::string& output_directory,
 
 }
 
-// Функция для генерации кусочно-постоянного сигнала (ваш вариант 1)
 std::vector<std::complex<double>> generate_piecewise_constant_signal(size_t n, double a, double b, double w2)
 {
     std::vector<std::complex<double>> signal(n, { 0.0, 0.0 });
-
-    //Используем современный ГСЧ для добавления шума
-    // unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
-    // std::mt19937 gen(seed);
-    // std::uniform_real_distribution<double> noise_dist(-0.05, 0.05);
 
     const double quarter = n / 4.0;
     const double half = n / 2.0;
@@ -156,13 +149,9 @@ std::vector<std::complex<double>> generate_piecewise_constant_signal(size_t n, d
         double value = 0.0;
         
         if ((j >= quarter && j <= half) || (j > three_quarters)) {
-            // На участках где сигнал ненулевой: A + B*cos(2πω₂j/N)
             value = a + b * std::cos(2.0 * signal_processing::constants::pi * w2 * j / n);
         }
-        // На остальных участках value остаётся 0.0
-        
-        // Добавляем небольшой шум
-        //double noise = noise_dist(gen);
+    
         signal[j] = { value, 0.0 };
     }
 
@@ -172,23 +161,21 @@ std::vector<std::complex<double>> generate_piecewise_constant_signal(size_t n, d
 int main() {
     using namespace signal_processing;
     const int n_power = 9;
-    const int n_size = 1 << n_power;  // 2^9 = 512
+    const int n_size = 1 << n_power;  
 
-    const double a_val = 2.87;      // Ваш A = 2.87
-    const double b_val = 0.26;      // Ваш B = 0.26
-    const int w1_val = 2;           // Ваш ω₁ = 2 (не используется в кусочно-постоянном сигнале)
-    const int w2_val = 194;         // Ваш ω₂ = 194
+    const double a_val = 2.87;      
+    const double b_val = 0.26;     
+    const int w1_val = 2;          
+    const int w2_val = 194;         
     const int max_stages = 4;
 
     const std::string output_directory = "./output";
 
-    // Генерация кусочно-постоянного сигнала (вариант 1 из задания)
     std::vector<std::complex<double>> signal_data = 
         generate_piecewise_constant_signal(n_size, a_val, b_val, w2_val);
 
     save_signal_to_csv(output_directory + "/generated_signal.csv", signal_data);
 
-    // Обработка для всех трех базисов
     process_wavelet_basis(output_directory,
         wavelet_processor::wavelet_type::haar,
         signal_data, max_stages);
