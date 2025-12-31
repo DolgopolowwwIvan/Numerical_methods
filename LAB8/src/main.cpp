@@ -7,10 +7,10 @@
 int main() {
     
     model_parameters lions_antelopes = {
-        0.07,      // α
-        0.0035,    // β
-        0.0174,    // γ
-        0.00058    // δ
+        0.007,      // α - в 10 раз меньше
+        0.00035,    // β - в 10 раз меньше
+        0.00174,    // γ - в 10 раз меньше  
+        0.000058    // δ - в 10 раз меньше
     };
 
     model_parameters dragonfly_mosquito = {
@@ -28,15 +28,17 @@ int main() {
     
     double mosquitoes_eq, dragonflies_eq;
     aquatic_system.get_equilibrium_point(mosquitoes_eq, dragonflies_eq);
-
-    double antelopes_case1 = 80.0;
-    double lions_case1 = 10.0;
+    // Около равновесия
+    double antelopes_case1 = 32.0;
+    double lions_case1 = 19.0;
     
-    double antelopes_case2 = 15.0;
-    double lions_case2 = 35.0;
+    //  Больше хищников 
+    double antelopes_case2 = 11.0;
+    double lions_case2 = 29.0;
     
+    // Больше жертв 
     double antelopes_case3 = 31.0;
-    double lions_case3 = 20.0;
+    double lions_case3 = 2.0;
 
 
     //Много жертв
@@ -53,7 +55,7 @@ int main() {
     
 
     double dt_savanna = 1.0;
-    int steps_savanna = 730;
+    int steps_savanna = 3650;
 
     double dt_aquatic = 0.1;
     int steps_aquatic = 1600;  // 160 дней × 10 шагов в день

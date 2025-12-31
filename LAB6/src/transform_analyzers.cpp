@@ -32,6 +32,7 @@ void printResultsTable(const vector<Complex>& signal, const vector<Complex>& dft
 
     int N = signal.size();
     double amplitude_limit = 1e-6;
+    double phase_limit = 1e-6;  // Добавляем предел для фазы
     int count = 0;
 
     for (int m = 0; m < N; m++) {
@@ -39,8 +40,10 @@ void printResultsTable(const vector<Complex>& signal, const vector<Complex>& dft
         double phase = arg(dft_result[m]);
 
         bool significant_amplitude = (amplitude > amplitude_limit);
+        bool significant_phase = (abs(phase) > phase_limit);  // Проверка фазы
 
-        if (significant_amplitude) { 
+        // ИЗМЕНЕНИЕ: используем ИЛИ вместо И
+        if (significant_amplitude || significant_phase) { 
             cout << setw(4) << m << setw(12) << signal[m].real()
                 << setw(15) << dft_result[m].real()
                 << setw(15) << dft_result[m].imag()
